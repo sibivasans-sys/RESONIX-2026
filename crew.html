@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Crew — RESONIX 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #05041a;
+    --bg-soft: #0a0828;
+    --surface: #0d0b2e;
+    --surface-2: #131038;
+    --border: rgba(160,140,255,0.18);
+    --border-soft: rgba(160,140,255,0.09);
+    --cyan: #4f8dff;
+    --cyan-dim: #2f5fd9;
+    --violet: #9b5bff;
+    --blue: #4f6bff;
+    --magenta: #ff8a3d;
+    --white: #f4f2ff;
+    --muted: #9089ad;
+    --muted-2: #6a628f;
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+    --font-mono: 'Share Tech Mono', monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  html, body{ max-width:100%; }
+
+  body{
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.5;
+    overflow-x:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
+  img, svg{ max-width:100%; }
+  ::selection{ background: var(--cyan); color:#04060b; }
+  :focus-visible{ outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+  /* ---------- Cosmic background ---------- */
+  .bg-grid{
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(var(--border-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-soft) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 100%);
+    opacity:0.4;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  #starfield{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    width:100%; height:100%; display:block;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(79,109,255,0.18), transparent 60%),
+      radial-gradient(ellipse 90% 50% at 85% 90%, rgba(155,91,255,0.14), transparent 65%);
+  }
+
+  #vignette{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 55%, rgba(2,1,10,0.55) 100%);
+  }
+
+  .nebula{
+    position:fixed; border-radius:50%; filter: blur(90px); pointer-events:none; z-index:0;
+  }
+  .nebula.n1{
+    width:520px; height:520px; top:-140px; right:-120px;
+    background: radial-gradient(circle, rgba(155,91,255,0.3), transparent 70%);
+    animation: drift1 26s ease-in-out infinite;
+  }
+  .nebula.n2{
+    width:460px; height:460px; bottom:-160px; left:-140px;
+    background: radial-gradient(circle, rgba(79,141,255,0.24), transparent 70%);
+    animation: drift2 32s ease-in-out infinite;
+  }
+  .nebula.n3{
+    width:640px; height:420px; top:38%; left:50%; margin-left:-320px;
+    border-radius:50%;
+    background: radial-gradient(ellipse, rgba(79,141,255,0.09), transparent 72%);
+    animation: drift3 40s ease-in-out infinite;
+  }
+  @keyframes drift1{ 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(-30px, 40px); } }
+  @keyframes drift2{ 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(30px, -30px); } }
+  @keyframes drift3{ 0%,100%{ transform: translate(0,0) scale(1); } 50%{ transform: translate(20px, -18px) scale(1.06); } }
+
+  /* distant sun */
+  #sunGlow{
+    position:fixed; z-index:0; pointer-events:none;
+    top:-90px; left:-90px; width:280px; height:280px; border-radius:50%;
+    background: radial-gradient(circle, #fff6e0 0%, #ffd27a 22%, #ff8a3d 48%, transparent 72%);
+    opacity:0.5; filter: blur(2px);
+    animation: sunPulse 8s ease-in-out infinite;
+  }
+  @keyframes sunPulse{ 0%,100%{ opacity:0.45; } 50%{ opacity:0.62; } }
+
+  /* small distant planets */
+  .far-planet{
+    position:fixed; z-index:0; pointer-events:none; border-radius:50%;
+    opacity:0.55;
+  }
+  .far-planet.p1{
+    width:26px; height:26px; top:22%; right:9%;
+    background: radial-gradient(circle at 32% 28%, #ffb27a, #c9502f 70%);
+    box-shadow: 0 0 14px rgba(255,138,61,0.35);
+  }
+  .far-planet.p2{
+    width:16px; height:16px; bottom:16%; left:7%;
+    background: radial-gradient(circle at 32% 28%, #cdb8ff, #6f3fff 70%);
+    box-shadow: 0 0 12px rgba(155,91,255,0.4);
+  }
+  .far-planet.p2::after{
+    content:''; position:absolute; left:-9px; top:50%; width:34px; height:6px;
+    border:1px solid rgba(210,190,255,0.5); border-radius:50%;
+    transform: translateY(-50%) rotate(-20deg);
+  }
+
+  /* shooting stars */
+  .shooting-star{
+    position:fixed; z-index:0; pointer-events:none;
+    top:var(--sy, 10%); left:var(--sx, 15%);
+    width:2px; height:2px; border-radius:50%;
+    background: #fff;
+    box-shadow: 0 0 6px 1px rgba(255,255,255,0.8);
+    opacity:0;
+    animation: shoot var(--sdur, 6s) linear infinite;
+    animation-delay: var(--sdelay, 0s);
+  }
+  .shooting-star::before{
+    content:''; position:absolute; top:50%; right:0;
+    width:90px; height:1px; transform: translateY(-50%);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75));
+  }
+  @keyframes shoot{
+    0%{ opacity:0; transform: translate(0,0); }
+    2%{ opacity:1; }
+    18%{ opacity:0; transform: translate(-260px, 200px); }
+    100%{ opacity:0; transform: translate(-260px, 200px); }
+  }
+
+  /* drifting asteroid */
+  .asteroid-track{
+    position:fixed; z-index:0; pointer-events:none;
+    top:60%; left:-90px; width:46px; height:46px;
+    animation: asteroidDrift 52s linear infinite;
+  }
+  .asteroid-rotate{
+    width:100%; height:100%; display:block;
+    animation: asteroidSpin 12s linear infinite;
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.4));
+  }
+  @keyframes asteroidDrift{
+    0%{ transform: translate(0, 0); opacity:0; }
+    5%{ opacity:0.9; }
+    95%{ opacity:0.9; }
+    100%{ transform: translate(calc(100vw + 180px), -170px); opacity:0; }
+  }
+  @keyframes asteroidSpin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+  }
+
+  @media (max-width: 720px){
+    .nebula.n1{ width:260px; height:260px; top:-70px; right:-70px; }
+    .nebula.n2{ width:230px; height:230px; bottom:-80px; left:-80px; }
+    .nebula.n3{ width:260px; height:200px; margin-left:-130px; }
+    #sunGlow{ width:140px; height:140px; top:-45px; left:-45px; }
+    .far-planet.p1{ width:16px; height:16px; }
+    .far-planet.p2{ width:11px; height:11px; }
+    .asteroid-track{ width:28px; height:28px; }
+  }
+
+  @media (max-width: 420px){
+    .nebula.n1{ width:190px; height:190px; top:-50px; right:-50px; }
+    .nebula.n2{ width:170px; height:170px; bottom:-60px; left:-60px; }
+    .nebula.n3{ display:none; }
+    #sunGlow{ width:110px; height:110px; opacity:0.38; }
+    .far-planet.p1, .far-planet.p2{ opacity:0.4; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .nebula{ animation:none !important; }
+    .shooting-star{ display:none; }
+    .asteroid-track, .asteroid-rotate{ animation:none !important; display:none; }
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal{
+    opacity:0;
+    transform: translateY(22px);
+    transition: opacity .85s cubic-bezier(.16,.84,.44,1), transform .85s cubic-bezier(.16,.84,.44,1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible{ opacity:1; transform: translateY(0); }
+  .reveal.d1{ transition-delay: .08s; }
+  .reveal.d2{ transition-delay: .16s; }
+  .reveal.d3{ transition-delay: .24s; }
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1 !important; transform:none !important; transition:none !important; }
+  }
+
+  /* ---------- Depth & polish ---------- */
+  .crew-card{
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.045) inset,
+      0 14px 34px -22px rgba(0,0,0,0.9);
+    backdrop-filter: blur(4px);
+    transition:
+      transform .4s cubic-bezier(.16,.84,.44,1),
+      border-color .4s ease,
+      background .4s ease,
+      box-shadow .4s ease;
+  }
+  .crew-card:hover{
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.07) inset,
+      0 26px 50px -24px rgba(0,0,0,0.95),
+      0 0 30px -12px var(--accent, var(--cyan));
+  }
+  .crew-avatar{ transition: transform .4s cubic-bezier(.16,.84,.44,1); }
+  .crew-card:hover .crew-avatar{ transform: scale(1.08); }
+
+  body{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1.page-title{ letter-spacing:-0.005em; }
+  .page-sub{ letter-spacing:0.004em; }
+
+  /* ---------- Header / Nav (shared system) ---------- */
+  header{
+    position:sticky; top:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 18px 48px;
+    background: rgba(4,6,11,0.82);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .logo{
+    font-family: var(--font-display); font-weight:800; font-size: 1.15rem; letter-spacing: 0.08em;
+    display:flex; align-items:center; gap:10px; white-space:nowrap;
+  }
+  .logo .bolt{ width:20px; height:20px; color:var(--cyan); filter: drop-shadow(0 0 6px var(--cyan)); flex-shrink:0; }
+  .logo-img{ height:32px; width:auto; display:block; filter: drop-shadow(0 0 8px rgba(155,91,255,0.45)); }
+  .logo span.year{ color: var(--cyan); }
+
+
+  nav.primary-nav{
+    display:flex; gap:38px; font-weight:600; font-size:1.02rem; letter-spacing:0.02em;
+    margin-left:auto;
+  }
+  nav.primary-nav a{ position:relative; color: var(--muted); padding-bottom:6px; transition: color .25s ease; }
+  nav.primary-nav a:hover{ color: var(--white); }
+  nav.primary-nav a.active{ color: var(--white); }
+  nav.primary-nav a.active::after{
+    content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    box-shadow: 0 0 8px var(--cyan);
+  }
+
+  .menu-toggle{
+    display:none; background:none; border:none; color:var(--white);
+    min-width:44px; min-height:44px; margin-left:14px;
+    align-items:center; justify-content:center;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family: var(--font-body); font-weight:700; font-size:1rem; letter-spacing:0.03em;
+    padding: 13px 26px; border-radius:8px; border:1px solid transparent;
+    transition: transform .22s ease, box-shadow .3s ease, background .3s ease, border-color .25s ease;
+    white-space:nowrap;
+  }
+  .btn svg{ width:16px; height:16px; transition: transform .25s ease; }
+  .btn-primary{ background: linear-gradient(100deg, var(--blue), var(--violet)); color: var(--white); }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 8px 28px -6px rgba(124,107,255,0.65), 0 0 0 1px rgba(255,255,255,0.08) inset; }
+  .btn-primary:hover svg{ transform: translateX(3px); }
+  .btn-primary:active{ transform: translateY(0px) scale(0.98); }
+  .btn-outline{ background: rgba(79,141,255,0.05); color: var(--cyan); border-color: rgba(79,141,255,0.4); }
+  .btn-outline:hover{ background: rgba(79,141,255,0.12); border-color: var(--cyan); box-shadow: 0 0 24px -6px rgba(79,141,255,0.55); transform: translateY(-2px); }
+  .btn-outline:active{ transform: translateY(0px) scale(0.98); }
+
+  /* ---------- Page hero ---------- */
+  .page-hero{
+    position:relative; z-index:1;
+    max-width:1400px; margin:0 auto;
+    padding: 64px 48px 8px;
+    text-align:center;
+  }
+  .eyebrow{
+    color: var(--cyan); font-weight:700; font-size:1rem; letter-spacing:0.08em; display:block; margin-bottom:14px;
+  }
+  h1.page-title{
+    font-family: var(--font-display); font-weight:800;
+    font-size: clamp(2.4rem, 5vw, 3.6rem); line-height:1.08;
+    text-shadow: 0 0 30px rgba(120,150,255,0.15);
+  }
+  .page-title .accent{ color: var(--cyan); text-shadow: 0 0 18px rgba(79,141,255,0.4); }
+  .page-sub{
+    margin: 18px auto 0; max-width:56ch; color: var(--muted); font-size:1.12rem; font-weight:500;
+  }
+
+  /* ---------- Crew ---------- */
+  .crew-section{
+    max-width:1400px; margin: 0 auto; padding: 40px 48px 20px;
+  }
+  .crew-heading{
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    margin-bottom:30px;
+  }
+  .crew-heading h2{
+    font-family: var(--font-display); font-weight:700; font-size:1.1rem;
+    letter-spacing:0.14em; color: var(--white); white-space:nowrap;
+  }
+  .crew-heading .rule{
+    flex:1 1 auto; max-width:160px; height:1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  }
+
+  .crew-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:22px;
+    margin-bottom:20px;
+  }
+
+  .crew-card{
+    position:relative;
+    background: var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding: 30px 22px;
+    text-align:center;
+    transition: transform .28s ease, border-color .28s ease, background .28s ease;
+    overflow:hidden;
+  }
+  .crew-card::before{
+    content:'';
+    position:absolute; inset:0; border-radius:14px;
+    background: radial-gradient(220px circle at 50% 0%, color-mix(in srgb, var(--accent, var(--cyan)) 18%, transparent), transparent 70%);
+    opacity:0; transition: opacity .35s ease;
+    pointer-events:none;
+  }
+  .crew-card:hover{
+    transform: translateY(-6px);
+    border-color: var(--accent, var(--cyan));
+    background: var(--surface-2);
+  }
+  .crew-card:hover::before{ opacity:1; }
+
+  .crew-avatar{
+    width:104px; height:104px; margin: 0 auto;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-weight:800; font-size:1.7rem;
+    background: color-mix(in srgb, var(--accent, var(--cyan)) 20%, var(--bg));
+    color: var(--accent, var(--cyan));
+    border: 1px solid var(--accent, var(--cyan));
+    box-shadow: 0 0 20px -8px var(--accent, var(--cyan));
+    position:relative; overflow:hidden;
+  }
+
+  .crew-photo{
+    position:absolute; inset:0;
+    width:100%; height:100%; object-fit:cover;
+    border-radius:50%;
+    display:none;
+  }
+  .crew-initials{
+    display:flex; align-items:center; justify-content:center;
+    width:100%; height:100%;
+  }
+  .crew-avatar.has-photo .crew-photo{ display:block; }
+  .crew-avatar.has-photo .crew-initials{ display:none; }
+
+  .crew-name{
+    font-family: var(--font-display); font-weight:700; font-size:1.05rem;
+    color: var(--white); margin-bottom:4px;
+  }
+  .crew-role{ color: var(--accent, var(--cyan)); font-weight:600; font-size:0.92rem; margin-bottom:4px; }
+  .crew-dept{ color: var(--muted); font-size:0.85rem; margin-bottom:16px; }
+
+  .crew-contact{
+    display:flex; flex-direction:column; gap:6px;
+    font-size:0.82rem; color: var(--muted);
+    border-top: 1px solid var(--border-soft); padding-top:14px;
+  }
+  .crew-contact a{ transition: color .25s ease; }
+  .crew-contact a:hover{ color: var(--white); }
+
+  /* photo/name flip — 5s photo, 10s name, 15s loop */
+  .crew-flip{
+    position:relative;
+    height:140px;
+  }
+  .crew-flip-face{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    opacity:0;
+    animation: crewFlip 15s ease-in-out infinite;
+  }
+  .crew-flip-photo{ animation-name: crewFlipPhoto; }
+  .crew-flip-name{ animation-name: crewFlipName; }
+  @keyframes crewFlipPhoto{
+    0%, 30%   { opacity:1; }
+    36%, 100% { opacity:0; }
+  }
+  @keyframes crewFlipName{
+    0%, 30%   { opacity:0; }
+    36%, 97%  { opacity:1; }
+    100%      { opacity:0; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .crew-flip-face{ animation:none !important; position:static; opacity:1 !important; }
+    .crew-flip{ height:auto; }
+  }
+  .crew-grid .crew-card:nth-child(3n+2) .crew-flip-face{ animation-delay: -5s; }
+  .crew-grid .crew-card:nth-child(3n+3) .crew-flip-face{ animation-delay: -10s; }
+
+  /* featured Overall Head card */
+  .crew-grid-single{
+    grid-template-columns: 1fr; max-width:280px; margin:0 auto;
+  }
+  .crew-card-featured{
+    padding: 38px 26px;
+    background: linear-gradient(160deg, var(--surface), var(--surface-2));
+  }
+  .crew-avatar-lg{
+    width:140px; height:140px; font-size:2.1rem;
+  }
+  .crew-name-lg{ font-size:1.25rem; }
+  .crew-card-featured .crew-flip{ height:176px; }
+
+  /* faculty row (3 cards, centred) */
+  .crew-grid-three{ max-width:900px; margin: 0 auto 20px; }
+  @media (min-width: 721px){
+    .crew-grid.crew-grid-three{ grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .crew-note{
+    text-align:center; color: var(--muted-2); font-size:0.9rem;
+    max-width:60ch; margin: 20px auto 50px; padding: 0 24px;
+  }
+
+  footer.site-footer{
+    text-align:center; padding: 26px 24px 40px;
+    color: var(--muted-2); font-size:0.85rem;
+    position:relative; z-index:1;
+    border-top:1px solid var(--border-soft);
+  }
+
+  /* ===== Large tablets / small laptops ===== */
+  @media (max-width: 1180px){
+    header{ padding: 18px 32px; }
+    .page-hero{ padding: 56px 32px 8px; }
+    .crew-section{ padding: 36px 32px 20px; }
+  }
+
+  /* ===== Tablets ===== */
+  @media (max-width: 1024px){
+    .crew-grid{ grid-template-columns: repeat(2, 1fr); }
+    nav.primary-nav{ gap:26px; }
+  }
+
+  @media (max-width: 860px){
+    header{ padding: 16px 24px; }
+    .page-hero{ padding: 44px 24px 4px; }
+    .crew-section{ padding: 32px 24px 20px; }
+  }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 720px){
+    .logo{ font-size:0.95rem; }
+    .logo .bolt{ width:17px; height:17px; }
+    .logo-img{ height:26px; }
+    nav.primary-nav{
+      position:absolute; top:100%; left:0; right:0; margin-left:0;
+      background: rgba(4,6,11,0.98);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      flex-direction:column; align-items:stretch;
+      padding: 0 max(20px, env(safe-area-inset-right)) 0 max(20px, env(safe-area-inset-left));
+      gap:0; font-size:1.08rem;
+      max-height:0; opacity:0; overflow:hidden; pointer-events:none;
+      transition: max-height .35s ease, opacity .3s ease, padding .35s ease;
+    }
+    nav.primary-nav.open{ max-height:420px; opacity:1; pointer-events:auto; padding-top:14px; padding-bottom:18px; }
+    nav.primary-nav a{ width:100%; padding:13px 0; border-bottom: 1px solid var(--border-soft); }
+    nav.primary-nav a:last-child{ border-bottom:none; }
+    .menu-toggle{ display:flex; }
+
+    .page-hero{ padding: 32px 20px 4px; }
+    h1.page-title{ font-size: clamp(2rem, 9vw, 2.6rem); }
+    .page-sub{ font-size:1rem; }
+
+    .crew-section{ padding: 28px 20px 12px; }
+    .crew-heading{ gap:12px; margin-bottom:22px; }
+    .crew-heading h2{ font-size:0.9rem; }
+    .crew-heading .rule{ max-width:60px; }
+    .crew-grid{ grid-template-columns: 1fr; gap:16px; max-width:340px; margin:0 auto; }
+    .crew-card{ padding:26px 20px; }
+    .crew-avatar{ width:88px; height:88px; font-size:1.5rem; }
+    .crew-flip{ height:120px; }
+  }
+
+  @media (max-width: 420px){
+    .crew-grid{ max-width:none; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div id="sunGlow" aria-hidden="true"></div>
+<div class="far-planet p1" aria-hidden="true"></div>
+<div class="far-planet p2" aria-hidden="true"></div>
+<div class="nebula n1" aria-hidden="true"></div>
+<div class="nebula n2" aria-hidden="true"></div>
+<div class="nebula n3" aria-hidden="true"></div>
+<div class="bg-grid" aria-hidden="true"></div>
+<div id="vignette" aria-hidden="true"></div>
+
+<div class="shooting-star" style="--sx:12%; --sy:8%; --sdur:7s; --sdelay:0s;" aria-hidden="true"></div>
+<div class="shooting-star" style="--sx:65%; --sy:4%; --sdur:9s; --sdelay:3.5s;" aria-hidden="true"></div>
+<div class="shooting-star" style="--sx:85%; --sy:22%; --sdur:11s; --sdelay:6s;" aria-hidden="true"></div>
+
+<div class="asteroid-track" aria-hidden="true">
+  <svg class="asteroid-rotate" viewBox="0 0 60 60">
+    <defs>
+      <radialGradient id="asteroidGradient" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#ab9a82"/>
+        <stop offset="45%" stop-color="#6f5f4c"/>
+        <stop offset="100%" stop-color="#2a2119"/>
+      </radialGradient>
+    </defs>
+    <path d="M11,27 L17,11 L33,6 L48,13 L55,26 L49,42 L34,53 L18,47 L6,36 Z" fill="url(#asteroidGradient)" stroke="#1c1610" stroke-width="1"/>
+    <circle cx="22" cy="22" r="4" fill="#3a3024" opacity="0.7"/>
+    <circle cx="38" cy="18" r="2.6" fill="#3a3024" opacity="0.6"/>
+    <circle cx="33" cy="35" r="5" fill="#241d15" opacity="0.6"/>
+    <circle cx="18" cy="38" r="2.2" fill="#3a3024" opacity="0.5"/>
+  </svg>
+</div>
+
+<header>
+  <a class="logo" href="index.html">
+    <svg class="bolt" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>
+    RESONIX
+    <span class="year">2026</span>
+  </a>
+
+  <nav class="primary-nav" id="primaryNav">
+    <a href="index.html#mission-control">Mission Control</a>
+    <a href="index.html#transmission">Transmission</a>
+    <a href="Events.html">Missions</a>
+    <a href="crew.html" class="active">Crew</a>
+    <a href="https://veltech.edu.in/resonix/" target="_blank" rel="noopener">Signal Center</a>
+    <a href="index.html#mission-base">Mission Base</a>
+  </nav>
+
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primaryNav">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="page-hero">
+    <span class="eyebrow reveal">RESONIX 2026</span>
+    <h1 class="page-title reveal d1">Meet the <span class="accent">crew</span>.</h1>
+    <p class="page-sub reveal d2">The student committee — drawn from 2nd, 3rd and 4th year — steering RESONIX 2026 from signal to launch.</p>
+  </section>
+
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>FACULTY</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid crew-grid-three">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="dr-kolanchinathan">
+              <img class="crew-photo" alt="Dr. Kolanchinathan">
+              <span class="crew-initials">KO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Dr. Kolanchinathan</h3>
+            <p class="crew-role">Faculty</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="mrs-tharani">
+              <img class="crew-photo" alt="Mrs. Tharani">
+              <span class="crew-initials">TH</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Mrs. Tharani</h3>
+            <p class="crew-role">Faculty</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="dr-ezhilarasan">
+              <img class="crew-photo" alt="Dr. Ezhilarasan">
+              <span class="crew-initials">EZ</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Dr. Ezhilarasan</h3>
+            <p class="crew-role">Faculty</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>OVERALL HEAD</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid crew-grid-single">
+      <article class="crew-card crew-card-featured reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar crew-avatar-lg" data-slug="vasanthan-m">
+              <img class="crew-photo" alt="Vasanthan.M">
+              <span class="crew-initials">VM</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name crew-name-lg">Vasanthan.M</h3>
+            <p class="crew-role">Overall Head</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>PRESIDENT</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="rohith">
+              <img class="crew-photo" alt="Rohith">
+              <span class="crew-initials">RO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Rohith</h3>
+            <p class="crew-role">President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="kareem">
+              <img class="crew-photo" alt="Kareem">
+              <span class="crew-initials">KA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Kareem</h3>
+            <p class="crew-role">President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="kopika">
+              <img class="crew-photo" alt="Kopika">
+              <span class="crew-initials">KO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Kopika</h3>
+            <p class="crew-role">President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="anish-adhithyan">
+              <img class="crew-photo" alt="Anish Adhithyan">
+              <span class="crew-initials">AA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Anish Adhithyan</h3>
+            <p class="crew-role">President</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>VICE PRESIDENT</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="akash">
+              <img class="crew-photo" alt="Akash">
+              <span class="crew-initials">AK</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Akash</h3>
+            <p class="crew-role">Vice President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="yoga">
+              <img class="crew-photo" alt="Yoga">
+              <span class="crew-initials">YO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Yoga</h3>
+            <p class="crew-role">Vice President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="benjamin">
+              <img class="crew-photo" alt="Benjamin">
+              <span class="crew-initials">BE</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Benjamin</h3>
+            <p class="crew-role">Vice President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="akshaya">
+              <img class="crew-photo" alt="Akshaya">
+              <span class="crew-initials">AK</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Akshaya</h3>
+            <p class="crew-role">Vice President</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="bhavadharani">
+              <img class="crew-photo" alt="Bhavadharani">
+              <span class="crew-initials">BH</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Bhavadharani</h3>
+            <p class="crew-role">Vice President</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>SECRETARY</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="vasanth">
+              <img class="crew-photo" alt="Vasanth">
+              <span class="crew-initials">VA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Vasanth</h3>
+            <p class="crew-role">Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="ashvadhani">
+              <img class="crew-photo" alt="Ashvadhani">
+              <span class="crew-initials">AS</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Ashvadhani</h3>
+            <p class="crew-role">Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="monish">
+              <img class="crew-photo" alt="Monish">
+              <span class="crew-initials">MO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Monish</h3>
+            <p class="crew-role">Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="harinipriya">
+              <img class="crew-photo" alt="Harinipriya">
+              <span class="crew-initials">HA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Harinipriya</h3>
+            <p class="crew-role">Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="abishek-e">
+              <img class="crew-photo" alt="Abishek.E">
+              <span class="crew-initials">AE</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Abishek.E</h3>
+            <p class="crew-role">Secretary</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>JOINT SECRETARY</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="mounika">
+              <img class="crew-photo" alt="Mounika">
+              <span class="crew-initials">MO</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Mounika</h3>
+            <p class="crew-role">Joint Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="harini">
+              <img class="crew-photo" alt="Harini">
+              <span class="crew-initials">HA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Harini</h3>
+            <p class="crew-role">Joint Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="ramya">
+              <img class="crew-photo" alt="Ramya">
+              <span class="crew-initials">RA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Ramya</h3>
+            <p class="crew-role">Joint Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="rahul-ks">
+              <img class="crew-photo" alt="Rahul Ks">
+              <span class="crew-initials">RK</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Rahul Ks</h3>
+            <p class="crew-role">Joint Secretary</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="renish-paul">
+              <img class="crew-photo" alt="Renish Paul">
+              <span class="crew-initials">RP</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Renish Paul</h3>
+            <p class="crew-role">Joint Secretary</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>TECHNICAL HEAD</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="bharathwaj">
+              <img class="crew-photo" alt="Bharathwaj">
+              <span class="crew-initials">BH</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Bharathwaj</h3>
+            <p class="crew-role">Technical Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="merviya">
+              <img class="crew-photo" alt="Merviya">
+              <span class="crew-initials">ME</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Merviya</h3>
+            <p class="crew-role">Technical Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="kalaivani">
+              <img class="crew-photo" alt="Kalaivani">
+              <span class="crew-initials">KA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Kalaivani</h3>
+            <p class="crew-role">Technical Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="deekshitha">
+              <img class="crew-photo" alt="Deekshitha">
+              <span class="crew-initials">DE</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Deekshitha</h3>
+            <p class="crew-role">Technical Head</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>EVENT HEAD</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="ajay">
+              <img class="crew-photo" alt="Ajay">
+              <span class="crew-initials">AJ</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Ajay</h3>
+            <p class="crew-role">Event Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="mohana-priya">
+              <img class="crew-photo" alt="Mohana Priya">
+              <span class="crew-initials">MP</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Mohana Priya</h3>
+            <p class="crew-role">Event Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="d-rahul">
+              <img class="crew-photo" alt="D Rahul">
+              <span class="crew-initials">DR</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">D Rahul</h3>
+            <p class="crew-role">Event Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="lathikasri-a">
+              <img class="crew-photo" alt="Lathikasri.A">
+              <span class="crew-initials">LA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Lathikasri.A</h3>
+            <p class="crew-role">Event Head</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>TREASURER</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="farhana">
+              <img class="crew-photo" alt="Farhana">
+              <span class="crew-initials">FA</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Farhana</h3>
+            <p class="crew-role">Treasurer</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="renuka">
+              <img class="crew-photo" alt="Renuka">
+              <span class="crew-initials">RE</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Renuka</h3>
+            <p class="crew-role">Treasurer</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="prabha">
+              <img class="crew-photo" alt="Prabha">
+              <span class="crew-initials">PR</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Prabha</h3>
+            <p class="crew-role">Treasurer</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="sanjay-kumar">
+              <img class="crew-photo" alt="Sanjay Kumar">
+              <span class="crew-initials">SK</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Sanjay Kumar</h3>
+            <p class="crew-role">Treasurer</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="kevin-j">
+              <img class="crew-photo" alt="Kevin J">
+              <span class="crew-initials">KJ</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Kevin J</h3>
+            <p class="crew-role">Treasurer</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="crew-section">
+    <div class="crew-heading reveal">
+      <span class="rule"></span>
+      <h2>DIGITAL HEAD</h2>
+      <span class="rule"></span>
+    </div>
+    <div class="crew-grid">
+      <article class="crew-card reveal" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="abish">
+              <img class="crew-photo" alt="Abish">
+              <span class="crew-initials">AB</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Abish</h3>
+            <p class="crew-role">Digital Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d1" style="--accent:#ff8a3d">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="shifana">
+              <img class="crew-photo" alt="Shifana">
+              <span class="crew-initials">SH</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Shifana</h3>
+            <p class="crew-role">Digital Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d2" style="--accent:#9b5bff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="harish-sriram">
+              <img class="crew-photo" alt="Harish Sriram">
+              <span class="crew-initials">HS</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Harish Sriram</h3>
+            <p class="crew-role">Digital Head</p>
+          </div>
+        </div>
+      </article>
+      <article class="crew-card reveal d3" style="--accent:#4f8dff">
+        <div class="crew-flip">
+          <div class="crew-flip-face crew-flip-photo">
+            <div class="crew-avatar" data-slug="vishal">
+              <img class="crew-photo" alt="Vishal">
+              <span class="crew-initials">VI</span>
+            </div>
+          </div>
+          <div class="crew-flip-face crew-flip-name">
+            <h3 class="crew-name">Vishal</h3>
+            <p class="crew-role">Digital Head</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <p class="crew-note reveal">Heads are drawn from 2nd, 3rd and 4th year students across the department.</p>
+</main>
+
+
+
+
+
+<footer class="site-footer">
+  &copy; 2026 RESONIX · Department of Electronics &amp; Communication Engineering
+</footer>
+
+<script>
+  // Load crew photos — drop a file named after each person into
+  // assets/crew/<slug>.jpg and it's picked up automatically.
+  // Falls back to the initials avatar until a matching photo exists.
+  (function loadCrewPhotos(){
+    document.querySelectorAll('.crew-avatar[data-slug]').forEach(box => {
+      const slug = box.getAttribute('data-slug');
+      const img = box.querySelector('.crew-photo');
+      if(!img || !slug) return;
+      img.addEventListener('load', () => box.classList.add('has-photo'));
+      img.addEventListener('error', () => box.classList.remove('has-photo'));
+      img.src = 'assets/crew/' + slug + '.jpg';
+    });
+  })();
+
+  // Starfield canvas
+  (function starfield(){
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let stars = [];
+
+    function resize(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const count = Math.floor((canvas.width * canvas.height) / 9000);
+      stars = Array.from({length: count}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.4 + 0.3,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.5 + Math.random() * 1.2
+      }));
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function draw(t){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(s => {
+        const twinkle = reduceMotion ? 0.8 : 0.5 + 0.5 * Math.sin(t/1000 * s.speed + s.phase);
+        ctx.globalAlpha = 0.25 + twinkle * 0.75;
+        ctx.fillStyle = '#eef1ff';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      if(!reduceMotion) requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  // Scroll reveal
+  (function reveal(){
+    const targets = document.querySelectorAll('.reveal');
+    if(!targets.length) return;
+    if(!('IntersectionObserver' in window)){
+      targets.forEach(t => t.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(t => io.observe(t));
+  })();
+
+  // Mobile dropdown menu
+  const menuToggle = document.getElementById('menuToggle');
+  const primaryNav = document.getElementById('primaryNav');
+  menuToggle.addEventListener('click', () => {
+    const open = primaryNav.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open);
+  });
+  primaryNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    primaryNav.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', false);
+  }));
+
+</script>
+
+</body>
+</html>
